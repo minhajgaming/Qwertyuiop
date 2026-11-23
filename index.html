@@ -3,494 +3,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyApp Store - Play Store Clone</title>
+    <title>NexusPlay - Ultra App Store</title>
     <style>
         :root {
             --primary: #01875f;
-            --primary-dark: #056449;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-main: #202124;
-            --text-sub: #5f6368;
+            --primary-hover: #056449;
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --text: #202124;
+            --text-muted: #5f6368;
             --border: #dadce0;
+            --chip-bg: #f1f3f4;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        [data-theme="dark"] {
+            --primary: #00c88c;
+            --primary-hover: #00a875;
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --text: #e8eaed;
+            --text-muted: #9aa0a6;
+            --border: #3c4043;
+            --chip-bg: #2d2e30;
+            --shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; transition: background 0.25s, color 0.25s; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-        /* Header & Navbar */
+        /* Navbar */
         header {
-            background-color: var(--card-bg);
-            padding: 15px 5%;
+            background: var(--surface);
+            padding: 14px 5%;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
-            flex-wrap: wrap;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .brand { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; color: var(--primary); cursor: pointer; }
+        .search-wrap { flex: 1; max-width: 480px; position: relative; }
+        .search-wrap input {
+            width: 100%; padding: 10px 18px; border-radius: 24px; border: 1px solid var(--border);
+            background: var(--chip-bg); color: var(--text); font-size: 14px; outline: none;
         }
+        .search-wrap input:focus { border-color: var(--primary); background: var(--surface); }
 
-        .search-box {
-            flex: 1;
-            max-width: 500px;
-            display: flex;
+        .nav-actions { display: flex; gap: 10px; align-items: center; }
+        .btn {
+            padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border);
+            background: var(--surface); color: var(--text); cursor: pointer; font-weight: 600; font-size: 13px;
         }
+        .btn-primary { background: var(--primary); color: #fff; border: none; }
+        .btn-primary:hover { background: var(--primary-hover); }
 
-        .search-box input {
-            width: 100%;
-            padding: 10px 18px;
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            font-size: 15px;
-            outline: none;
-            background: #f1f3f4;
+        /* Categories */
+        .cat-bar {
+            display: flex; gap: 10px; padding: 14px 5%; overflow-x: auto;
+            background: var(--surface); border-bottom: 1px solid var(--border);
         }
+        .cat-chip {
+            padding: 7px 16px; border-radius: 18px; background: var(--chip-bg);
+            color: var(--text-muted); border: none; cursor: pointer; font-weight: 600; font-size: 13px; white-space: nowrap;
+        }
+        .cat-chip.active { background: var(--primary); color: #fff; }
 
-        .search-box input:focus {
-            background: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        /* Featured Banner */
+        .container { max-width: 1280px; margin: 25px auto; padding: 0 5%; }
+        .banner {
+            background: linear-gradient(135deg, #01875f, #004d40);
+            border-radius: 18px; padding: 30px; color: #fff; margin-bottom: 30px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
         }
-
-        /* Category Filter */
-        .categories {
-            padding: 15px 5%;
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            background: #fff;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .cat-btn {
-            padding: 8px 18px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: #fff;
-            color: var(--text-sub);
-            cursor: pointer;
-            font-weight: 500;
-            white-space: nowrap;
-            transition: 0.2s;
-        }
-
-        .cat-btn.active, .cat-btn:hover {
-            background-color: #e6f3ef;
-            color: var(--primary);
-            border-color: var(--primary);
-        }
+        .banner h1 { font-size: 26px; margin-bottom: 8px; }
+        .banner p { opacity: 0.9; font-size: 14px; max-width: 500px; }
 
         /* App Grid */
-        .container {
-            padding: 25px 5%;
-            max-width: 1300px;
-            margin: auto;
-        }
-
-        .section-title {
-            font-size: 20px;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
+        .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
         .app-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid transparent;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+            padding: 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center;
         }
+        .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--primary); }
+        .app-icon { width: 76px; height: 76px; border-radius: 18px; object-fit: cover; margin-bottom: 12px; }
+        .app-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .app-dev { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+        .app-tags { font-size: 12px; color: var(--text-muted); display: flex; gap: 8px; }
 
-        .app-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-            border-color: var(--border);
-        }
-
-        .app-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 18px;
-            object-fit: cover;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .app-name {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--text-main);
-        }
-
-        .app-dev {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin-bottom: 8px;
-        }
-
-        .app-meta {
-            font-size: 13px;
-            color: var(--text-sub);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        /* Modal (App Details View) */
+        /* Modal */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+            z-index: 1000; justify-content: center; align-items: center; padding: 16px;
         }
-
-        .modal-content {
-            background: #fff;
-            width: 100%;
-            max-width: 600px;
-            border-radius: 16px;
-            padding: 25px;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
+        .modal-box {
+            background: var(--surface); width: 100%; max-width: 620px; border-radius: 18px;
+            padding: 24px; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid var(--border);
         }
+        .close-modal { position: absolute; top: 16px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); }
 
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 26px;
-            cursor: pointer;
-            color: var(--text-sub);
+        .detail-top { display: flex; gap: 18px; align-items: center; margin-bottom: 20px; }
+        .detail-icon { width: 88px; height: 88px; border-radius: 20px; }
+        .stats-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); text-align: center;
+            padding: 14px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 18px;
         }
+        .stats-row strong { display: block; font-size: 15px; }
+        .stats-row span { font-size: 11px; color: var(--text-muted); }
 
-        .modal-header {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 20px;
+        .install-btn {
+            width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--primary);
+            color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 18px;
         }
+        .progress-wrap { display: none; margin-bottom: 18px; }
+        .progress-bar { height: 8px; background: var(--chip-bg); border-radius: 6px; overflow: hidden; margin-top: 6px; }
+        .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.2s; }
 
-        .modal-icon {
-            width: 90px;
-            height: 90px;
-            border-radius: 20px;
-        }
-
-        .modal-stats {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .stat-box strong {
-            display: block;
-            font-size: 16px;
-        }
-
-        .stat-box span {
-            font-size: 12px;
-            color: var(--text-sub);
-        }
-
-        .download-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: #fff;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            transition: background 0.2s;
-        }
-
-        .download-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .app-desc {
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--text-sub);
+        /* Admin Form */
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 13px; margin-bottom: 4px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--chip-bg); color: var(--text); font-size: 14px;
         }
 
         @media (max-width: 600px) {
-            .app-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-            .modal-header {
-                flex-direction: column;
-                text-align: center;
-            }
+            .app-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <header>
-        <div class="logo">▶ MyApp Store</div>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="অ্যাপ বা গেম খুঁজুন..." onkeyup="filterApps()">
+<header>
+    <div class="brand" onclick="resetFilters()">▶ NexusPlay</div>
+    <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="অ্যাপ, গেম বা ডেভেলপার খুঁজুন..." oninput="renderApps()">
+    </div>
+    <div class="nav-actions">
+        <button class="btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+        <button class="btn btn-primary" onclick="openUploadModal()">+ Upload App</button>
+    </div>
+</header>
+
+<div class="cat-bar" id="catBar">
+    <button class="cat-chip active" onclick="selectCat('All', this)">সবগুলো (All)</button>
+    <button class="cat-chip" onclick="selectCat('Games', this)">গেমস (Games)</button>
+    <button class="cat-chip" onclick="selectCat('Tools', this)">টুলস (Tools)</button>
+    <button class="cat-chip" onclick="selectCat('Social', this)">সোশ্যাল (Social)</button>
+    <button class="cat-chip" onclick="selectCat('AI & Editing', this)">AI ও এডিটিং</button>
+</div>
+
+<div class="container">
+    <div class="banner">
+        <div>
+            <h1>NexusPlay App Store</h1>
+            <p>নিরাপদ, দ্রুত এবং বিজ্ঞাপনমুক্ত অ্যাপ ডাউনলোড প্ল্যাটফর্ম। আপনার পছন্দের অ্যাপ খুঁজে নিন বা নতুন অ্যাপ যুক্ত করুন।</p>
         </div>
-    </header>
-
-    <!-- Categories -->
-    <div class="categories">
-        <button class="cat-btn active" onclick="setCategory('All', this)">সব অ্যাপ (All)</button>
-        <button class="cat-btn" onclick="setCategory('Games', this)">গেমস (Games)</button>
-        <button class="cat-btn" onclick="setCategory('Social', this)">সোশ্যাল (Social)</button>
-        <button class="cat-btn" onclick="setCategory('Tools', this)">টুলস (Tools)</button>
-        <button class="cat-btn" onclick="setCategory('Editing', this)">এডিটিং (Editing)</button>
+        <button class="btn" style="background:#fff; color:#01875f;" onclick="openUploadModal()">নতুন অ্যাপ যোগ করুন</button>
     </div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <h2 class="section-title" id="sectionTitle">জনপ্রিয় অ্যাপ ও গেমস</h2>
-        <div class="app-grid" id="appGrid"></div>
+    <div class="section-head">
+        <h3 id="gridHeading">জনপ্রিয় অ্যাপ ও গেমস</h3>
+        <span id="appCount" style="font-size:13px; color:var(--text-muted);"></span>
     </div>
+    <div class="app-grid" id="appGrid"></div>
+</div>
 
-    <!-- App Details Modal -->
-    <div class="modal" id="appModal" onclick="closeModal(event)">
-        <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('appModal').style.display='none'">&times;</span>
-            <div class="modal-header">
-                <img src="" id="mIcon" class="modal-icon" alt="Icon">
-                <div>
-                    <h2 id="mName">App Name</h2>
-                    <p id="mDev" style="color: var(--primary); font-weight: 500; margin: 5px 0;">Developer</p>
-                    <span id="mCat" style="font-size: 12px; background: #eee; padding: 3px 8px; border-radius: 4px;">Category</span>
+<!-- App Detail Modal -->
+<div class="modal" id="detailModal" onclick="closeOnOutside(event, 'detailModal')">
+    <div class="modal-box">
+        <span class="close-modal" onclick="closeModal('detailModal')">&times;</span>
+        <div class="detail-top">
+            <img id="dIcon" class="detail-icon" src="" alt="">
+            <div>
+                <h2 id="dName"></h2>
+                <p id="dDev" style="color:var(--primary); font-weight:600; font-size:14px; margin:4px 0;"></p>
+                <span id="dCat" style="font-size:12px; background:var(--chip-bg); padding:3px 10px; border-radius:12px;"></span>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div><strong id="dRating"></strong><span>রেটিং</span></div>
+            <div><strong id="dSize"></strong><span>সাইজ</span></div>
+            <div><strong id="dDownloads"></strong><span>ডাউনলোড</span></div>
+            <div><strong id="dVersion"></strong><span>ভার্সন</span></div>
+        </div>
+
+        <button class="install-btn" id="installBtn" onclick="startDownload()">Install APK</button>
+
+        <div class="progress-wrap" id="progressWrap">
+            <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span id="progressStatus">ডাউনলোড হচ্ছে...</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <h4 style="margin-bottom:6px; font-size:15px;">অ্যাপ সম্পর্কে:</h4>
+        <p id="dDesc" style="font-size:14px; line-height:1.6; color:var(--text-muted);"></p>
+    </div>
+</div>
+
+<!-- Admin Upload Modal -->
+<div class="modal" id="uploadModal" onclick="closeOnOutside(event, 'uploadModal')">
+    <div class="modal-box">
+        <span class="close-modal" onclick="closeModal('uploadModal')">&times;</span>
+        <h3 style="margin-bottom:16px;">নতুন অ্যাপ আপলোড করুন</h3>
+        <form onsubmit="addNewApp(event)">
+            <div class="form-group">
+                <label>অ্যাপের নাম *</label>
+                <input type="text" id="uName" required placeholder="যেমন: Super Video Editor">
+            </div>
+            <div class="form-group">
+                <label>ডেভেলপারের নাম *</label>
+                <input type="text" id="uDev" required placeholder="যেমন: Minhaj Tech">
+            </div>
+            <div class="form-group">
+                <label>ক্যাটাগরি</label>
+                <select id="uCat">
+                    <option value="Games">Games</option>
+                    <option value="Tools">Tools</option>
+                    <option value="Social">Social</option>
+                    <option value="AI & Editing">AI & Editing</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ফাইল সাইজ ও ভার্সন</label>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="uSize" value="28 MB" placeholder="সাইজ (MB)">
+                    <input type="text" id="uVersion" value="v1.0.0" placeholder="ভার্সন">
                 </div>
             </div>
-
-            <div class="modal-stats">
-                <div class="stat-box">
-                    <strong id="mRating">4.8 ★</strong>
-                    <span>রেটিং</span>
-                </div>
-                <div class="stat-box">
-                    <strong id="mSize">45 MB</strong>
-                    <span>ফাইল সাইজ</span>
-                </div>
-                <div class="stat-box">
-                    <strong id="mDownloads">10M+</strong>
-                    <span>ডাউনলোড</span>
-                </div>
-                <div class="stat-box">
-                    <strong id="mVersion">v2.4.1</strong>
-                    <span>ভার্সন</span>
-                </div>
+            <div class="form-group">
+                <label>আইকন URL (খালি রাখলে ডিফল্ট আইকন বসবে)</label>
+                <input type="url" id="uIcon" placeholder="https://example.com/icon.png">
             </div>
-
-            <a href="#" id="mDownloadLink" class="download-btn" target="_blank">Install / Download APK</a>
-
-            <h4 style="margin-bottom: 8px;">অ্যাপ সম্পর্কে (About this app):</h4>
-            <p class="app-desc" id="mDesc">App description goes here...</p>
-        </div>
+            <div class="form-group">
+                <label>APK ডাউনলোড লিংক *</label>
+                <input type="url" id="uLink" required placeholder="https://your-storage.com/app.apk">
+            </div>
+            <div class="form-group">
+                <label>বিস্তারিত বিবরণ</label>
+                <textarea id="uDesc" rows="3" placeholder="অ্যাপটি কী কাজ করে তা লিখুন..."></textarea>
+            </div>
+            <button type="submit" class="install-btn">অ্যাপ পাবলিশ করুন</button>
+        </form>
     </div>
+</div>
 
-    <script>
-        // অ্যাপের ডাটাবেস (এখানে আপনি আপনার নিজের অ্যাপ এবং ডাউনলোড লিংক যুক্ত করতে পারবেন)
-        const appsData = [
-            {
-                id: 1,
-                name: "PhotoMaster Pro",
-                developer: "Creative Studio",
-                category: "Editing",
-                rating: "4.8 ★",
-                size: "42 MB",
-                downloads: "5M+",
-                version: "v3.2.0",
-                icon: "https://cdn-icons-png.flaticon.com/512/1040/1040241.png",
-                downloadUrl: "#download-photomaster", // এখানে আপনার APK ফাইলের আসল লিংক বসাবেন
-                description: "PhotoMaster Pro দিয়ে খুব সহজেই প্রফেশনাল ছবি এডিট করুন। এতে রয়েছে এআই ব্যাকগ্রাউন্ড রিমুভার, ফিল্টার এবং হাই-রেজোলিউশন এক্সপোর্ট সুবিধা।"
-            },
-            {
-                id: 2,
-                name: "Speed Racer 3D",
-                developer: "NextGen Games",
-                category: "Games",
-                rating: "4.6 ★",
-                size: "120 MB",
-                downloads: "10M+",
-                version: "v1.8.5",
-                icon: "https://cdn-icons-png.flaticon.com/512/3097/3097144.png",
-                downloadUrl: "#download-speedracer",
-                description: "অসাধারণ গ্রাফিক্স এবং হাই-স্পিড কার রেসিং গেম। অফলাইনে এবং অনলাইনে বন্ধুদের সাথে মাল্টিপ্লেয়ার মোডে খেলার সুবিধা।"
-            },
-            {
-                id: 3,
-                name: "QuickShare File Transfer",
-                developer: "TechTools Inc.",
-                category: "Tools",
-                rating: "4.9 ★",
-                size: "12 MB",
-                downloads: "50M+",
-                version: "v5.0.1",
-                icon: "https://cdn-icons-png.flaticon.com/512/2991/2991112.png",
-                downloadUrl: "#download-quickshare",
-                description: "ইন্টারনেট ছাড়াই যেকোনো বড় ফাইল, ভিডিও বা অ্যাপ মুহূর্তের মধ্যে এক ফোন থেকে অন্য ফোনে শেয়ার করুন।"
-            },
-            {
-                id: 4,
-                name: "ChatBuzz Messenger",
-                developer: "Connect Social",
-                category: "Social",
-                rating: "4.5 ★",
-                size: "35 MB",
-                downloads: "100M+",
-                version: "v12.4",
-                icon: "https://cdn-icons-png.flaticon.com/512/134/134914.png",
-                downloadUrl: "#download-chatbuzz",
-                description: "নিরাপদ এবং দ্রুতগতির মেসেজিং অ্যাপ। এইচডি ভিডিও কল এবং এন্ড-টু-এন্ড এনক্রিপ্টেড চ্যাটিং সুবিধা।"
-            },
-            {
-                id: 5,
-                name: "PDF Scanner & Reader",
-                developer: "OfficeMate",
-                category: "Tools",
-                rating: "4.7 ★",
-                size: "18 MB",
-                downloads: "2M+",
-                version: "v2.1.0",
-                icon: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-                downloadUrl: "#download-pdfscanner",
-                description: "যেকোনো ডকুমেন্ট ক্যামেরা দিয়ে স্ক্যান করে পরিষ্কার PDF ফাইলে রূপান্তর করুন এবং পাসওয়ার্ড দিয়ে সুরক্ষিত রাখুন।"
-            },
-            {
-                id: 6,
-                name: "Galaxy Shooter",
-                developer: "Arcade World",
-                category: "Games",
-                rating: "4.4 ★",
-                size: "65 MB",
-                downloads: "1M+",
-                version: "v1.4.2",
-                icon: "https://cdn-icons-png.flaticon.com/512/808/808439.png",
-                downloadUrl: "#download-galaxyshooter",
-                description: "মহাকাশের শত্রুদের হাত থেকে পৃথিবীকে রক্ষা করুন। ১০০টিরও বেশি চ্যালেঞ্জিং লেভেল এবং বস ফাইট।"
+<script>
+    const defaultApps = [
+        {
+            id: 1, name: "AI Art & Photo Studio", dev: "PixelMind Labs", cat: "AI & Editing",
+            rating: "4.9 ★", size: "48 MB", downloads: "10M+", version: "v4.1.2",
+            icon: "https://cdn-icons-png.flaticon.com/512/1040/1040241.png",
+            link: "https://example.com/ai-studio.apk",
+            desc: "AI ব্যবহার করে যেকোনো সাধারণ ছবিকে প্রফেশনাল আর্ট এবং 4K কোয়ালিটিতে রূপান্তর করুন। ব্যাকগ্রাউন্ড রিমুভ এবং ম্যাজিক ইরেজার সুবিধা।"
+        },
+        {
+            id: 2, name: "Cyber Drift Racing", dev: "TurboGames", cat: "Games",
+            rating: "4.7 ★", size: "145 MB", downloads: "25M+", version: "v2.3.0",
+            icon: "https://cdn-icons-png.flaticon.com/512/3097/3097144.png",
+            link: "https://example.com/cyber-drift.apk",
+            desc: "হাই-স্পিড কার রেসিং এবং নিওন সিটি ট্র্যাক। অফলাইন ক্যারিয়ার মোড এবং অনলাইন মাল্টিপ্লেয়ার রেসিং চ্যালেঞ্জ।"
+        },
+        {
+            id: 3, name: "TurboShare Offline", dev: "SwiftTools", cat: "Tools",
+            rating: "4.8 ★", size: "14 MB", downloads: "50M+", version: "v6.0.4",
+            icon: "https://cdn-icons-png.flaticon.com/512/2991/2991112.png",
+            link: "https://example.com/turboshare.apk",
+            desc: "ইন্টারনেট বা কেবল ছাড়াই সর্বোচ্চ গতিতে বড় ভিডিও, অ্যাপ এবং ফাইল শেয়ার করুন।"
+        },
+        {
+            id: 4, name: "VibeChat Messenger", dev: "SocialWave", cat: "Social",
+            rating: "4.6 ★", size: "32 MB", downloads: "100M+", version: "v9.2.1",
+            icon: "https://cdn-icons-png.flaticon.com/512/134/134914.png",
+            link: "https://example.com/vibechat.apk",
+            desc: "দ্রুতগতির মেসেজিং, ক্রিস্টাল ক্লিয়ার ভয়েস ও ভিডিও কল এবং নিরাপদ গ্রুপ চ্যাট।"
+        }
+    ];
+
+    let apps = JSON.parse(localStorage.getItem('nexus_apps')) || defaultApps;
+    let activeCat = 'All';
+    let selectedApp = null;
+
+    function renderApps() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const grid = document.getElementById('appGrid');
+        grid.innerHTML = '';
+
+        const filtered = apps.filter(app => {
+            const matchCat = activeCat === 'All' || app.cat === activeCat;
+            const matchSearch = app.name.toLowerCase().includes(query) || app.dev.toLowerCase().includes(query);
+            return matchCat && matchSearch;
+        });
+
+        document.getElementById('appCount').innerText = `${filtered.length}টি অ্যাপ পাওয়া গেছে`;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">কোনো অ্যাপ খুঁজে পাওয়া যায়নি!</p>';
+            return;
+        }
+
+        filtered.forEach(app => {
+            const card = document.createElement('div');
+            card.className = 'app-card';
+            card.onclick = () => openDetail(app);
+            card.innerHTML = `
+                <img src="${app.icon}" class="app-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2991/2991112.png'">
+                <div class="app-title">${app.name}</div>
+                <div class="app-dev">${app.dev}</div>
+                <div class="app-tags"><span>${app.rating}</span> • <span>${app.size}</span></div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function selectCat(cat, el) {
+        activeCat = cat;
+        document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('gridHeading').innerText = cat === 'All' ? 'জনপ্রিয় অ্যাপ ও গেমস' : `${cat} অ্যাপসমূহ`;
+        renderApps();
+    }
+
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        selectCat('All', document.querySelector('.cat-chip'));
+    }
+
+    function openDetail(app) {
+        selectedApp = app;
+        document.getElementById('dIcon').src = app.icon;
+        document.getElementById('dName').innerText = app.name;
+        document.getElementById('dDev').innerText = app.dev;
+        document.getElementById('dCat').innerText = app.cat;
+        document.getElementById('dRating').innerText = app.rating;
+        document.getElementById('dSize').innerText = app.size;
+        document.getElementById('dDownloads').innerText = app.downloads;
+        document.getElementById('dVersion').innerText = app.version;
+        document.getElementById('dDesc').innerText = app.desc;
+
+        document.getElementById('progressWrap').style.display = 'none';
+        document.getElementById('installBtn').style.display = 'block';
+        document.getElementById('installBtn').innerText = `Install APK (${app.size})`;
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function startDownload() {
+        const btn = document.getElementById('installBtn');
+        const wrap = document.getElementById('progressWrap');
+        const fill = document.getElementById('progressFill');
+        const pct = document.getElementById('progressPercent');
+        const status = document.getElementById('progressStatus');
+
+        btn.style.display = 'none';
+        wrap.style.display = 'block';
+        let progress = 0;
+
+        const timer = setInterval(() => {
+            progress += 15;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(timer);
+                status.innerText = "ডাউনলোড সম্পন্ন! ফাইল ওপেন হচ্ছে...";
+                window.open(selectedApp.link, '_blank');
             }
-        ];
+            fill.style.width = progress + '%';
+            pct.innerText = progress + '%';
+        }, 200);
+    }
 
-        let currentCategory = 'All';
+    function openUploadModal() {
+        document.getElementById('uploadModal').style.display = 'flex';
+    }
 
-        // অ্যাপ কার্ড রেন্ডার করার ফাংশন
-        function renderApps(apps) {
-            const grid = document.getElementById('appGrid');
-            grid.innerHTML = '';
+    function addNewApp(e) {
+        e.preventDefault();
+        const newApp = {
+            id: Date.now(),
+            name: document.getElementById('uName').value,
+            dev: document.getElementById('uDev').value,
+            cat: document.getElementById('uCat').value,
+            rating: "5.0 ★",
+            size: document.getElementById('uSize').value || "20 MB",
+            downloads: "1K+",
+            version: document.getElementById('uVersion').value || "v1.0",
+            icon: document.getElementById('uIcon').value || "https://cdn-icons-png.flaticon.com/512/808/808439.png",
+            link: document.getElementById('uLink').value,
+            desc: document.getElementById('uDesc').value || "নতুন আপলোডকৃত অ্যাপ।"
+        };
 
-            if (apps.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#666;">কোনো অ্যাপ পাওয়া যায়নি!</p>';
-                return;
-            }
+        apps.unshift(newApp);
+        localStorage.setItem('nexus_apps', JSON.stringify(apps));
+        closeModal('uploadModal');
+        e.target.reset();
+        renderApps();
+    }
 
-            apps.forEach(app => {
-                const card = document.createElement('div');
-                card.className = 'app-card';
-                card.onclick = () => openModal(app);
-                card.innerHTML = `
-                    <img src="${app.icon}" alt="${app.name}" class="app-icon">
-                    <div class="app-name">${app.name}</div>
-                    <div class="app-dev">${app.developer}</div>
-                    <div class="app-meta">
-                        <span>${app.rating}</span>
-                        <span>•</span>
-                        <span>${app.size}</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function closeOnOutside(e, id) { if (e.target.id === id) closeModal(id); }
+
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('themeBtn');
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            btn.innerText = '🌙 Dark';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            btn.innerText = '☀️ Light';
         }
+    }
 
-        // ক্যাটাগরি ফিল্টারfunction setCategory(category, btn) {
-            currentCategory = category;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filterApps();
-        }
-
-        // সার্চ ও ক্যাটাগরি অনুযায়ী ফিল্টার
-        function filterApps() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = appsData.filter(app => {
-                const matchesCat = currentCategory === 'All' || app.category === currentCategory;
-                const matchesSearch = app.name.toLowerCase().includes(searchText) || app.developer.toLowerCase().includes(searchText);
-                return matchesCat && matchesSearch;
-            });
-            renderApps(filtered);
-        }
-
-        // পপ-আপ (Modal) ওপেন করা
-        function openModal(app) {
-            document.getElementById('mIcon').src = app.icon;
-            document.getElementById('mName').innerText = app.name;
-            document.getElementById('mDev').innerText = app.developer;
-            document.getElementById('mCat').innerText = app.category;
-            document.getElementById('mRating').innerText = app.rating;
-            document.getElementById('mSize').innerText = app.size;
-            document.getElementById('mDownloads').innerText = app.downloads;
-            document.getElementById('mVersion').innerText = app.version;
-            document.getElementById('mDesc').innerText = app.description;
-            document.getElementById('mDownloadLink').href = app.downloadUrl;
-
-            document.getElementById('appModal').style.display = 'flex';
-        }
-
-        // পপ-আপের বাইরে ক্লিক করলে বন্ধ হওয়া
-        function closeModal(e) {
-            if (e.target.id === 'appModal') {
-                document.getElementById('appModal').style.display = 'none';
-            }
-        }
-
-        // পেজ লোড হলে সব অ্যাপ দেখাবে
-        renderApps(appsData);
-    </script>
+    renderApps();
+</script>
 </body>
-</html>
+        </html>
+        
